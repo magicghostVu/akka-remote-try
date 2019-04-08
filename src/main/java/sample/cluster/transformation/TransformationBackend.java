@@ -18,7 +18,7 @@ public class TransformationBackend extends AbstractActor {
     //subscribe to cluster changes, MemberUp
     @Override
     public void preStart() {
-        cluster.subscribe(self(), MemberUp.class);
+        cluster.subscribe(getSelf(), MemberUp.class);
     }
 
     //re-subscribe when restart
@@ -47,9 +47,11 @@ public class TransformationBackend extends AbstractActor {
                 .build();
     }
 
-    void register(Member member) {
-        if (member.hasRole("frontend"))
+    private void register(Member member) {
+        if (member.hasRole("frontend")) {
             getContext().actorSelection(member.address() + "/user/frontend").tell(
                     BACKEND_REGISTRATION, self());
+        }
+
     }
 }
